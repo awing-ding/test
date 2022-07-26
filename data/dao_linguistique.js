@@ -34,7 +34,7 @@ var dao_linguistique = function(){
     }  
 
     this.countProposition = async function() {
-        //le résultat est dans la clé 'COUNT(*)'
+        //le résultat est dans la clé 'count'
         return new Promise(async function(resolve, reject){
             const query = "SELECT COUNT(*) AS count FROM suggestion"
             db.get(query, (err, rows) => {
