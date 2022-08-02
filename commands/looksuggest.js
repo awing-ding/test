@@ -6,7 +6,7 @@ const { EmbedBuilder} = require('discord.js')
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('looksuggest')
-		.setDescription('permet à awing de valider ou non les propositions, seul awing peut faire cette commande'),
+		.setDescription('permet à awing de regarder les propositions, seul awing peut faire cette commande'),
         
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){

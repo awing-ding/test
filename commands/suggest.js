@@ -26,11 +26,23 @@ module.exports = {
             )
         .addStringOption( option =>
             option.setName('phonetique')
-                  .setDescription("l'écriture de votre mot en alphabet phonétique international")
+                  .setDescription("l'écriture de votre mot en alphabet phonétique international, vous pouvez utiliser la commande /phonetize pour l'obtenir")
             )
+        .addStringOption( option =>
+            option.setName('class')
+                  .setDescription("la classe gramaticale de votre mot")
+        )
         .addStringOption( option =>
             option.setName('commentaire')
                   .setDescription("un commentaire supplémentaire (optionnel)")
+            )
+        .addStringOption(option=>
+            option.setName('cyrilic')
+                  .setDescription('le mot dans l\'alphabet cyrilique')
+            )
+        .addStringOption( option =>
+            option.setName('hangeul')
+                  .setDescription('l\'écriture de votre mot en hangeul')
             )
         .addStringOption( option=>
             option.setName('type')
@@ -51,17 +63,20 @@ module.exports = {
             }
         } while(!db.isPropositionIdTaken(id));
         let suggestion = {
-            id: id,
-            instigateur: interaction.user.id,
-            francais: interaction.options.getString('francais'),
-            pierrick: interaction.options.getString('pierrick'),
-            phonetique: interaction.options.getString('phonetique'),
-            commentaire: interaction.options.getString('commentaire'),
-            definition: interaction.options.getString('definition'),
-            etymologie: interaction.options.getString('etymologie'),
-            type: interaction.option.getString('type')
+            'id': id,
+            'instigateur': interaction.user.id,
+            'francais': interaction.options.getString('francais'),
+            'pierrick': interaction.options.getString('pierrick'),
+            'phonetique': interaction.options.getString('phonetique'),
+            'commentaire': interaction.options.getString('commentaire'),
+            'definition': interaction.options.getString('definition'),
+            'etymologie': interaction.options.getString('etymologie'),
+            'type': interaction.options.getString('type'),
+            'class': interaction.options.getString('class'),
+            'cyrilic': interaction.options.getString('cyrilic'),
+            'hangeul': interaction.options.getString('hangeul')
         };
-        db.addProposition(suggestion);
+        await db.addProposition(suggestion);
         await interaction.reply('<@361257883247050762> une nouvelle suggestion a été postée')
 	},
 };
