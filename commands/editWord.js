@@ -51,7 +51,7 @@ module.exports = {
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){
             const id = interaction.options.getString('id');
-            if (db.isIdValid(id)) {
+            if (db.isIdValidWord(id)) {
                 //obtention des paramètres et ajout dans un objet
                 let param = {}
                 param.pierrick = interaction.options.getString('pierrick');
@@ -63,18 +63,14 @@ module.exports = {
                 param.cyrilic = interaction.options.getString('cyrilic');
                 param.hangeul = interaction.options.getString('hangeul');
                 param.classe = interaction.options.getString('class');
-                let qvalues = ""
+                let base = db.getWord(id);
                 //on récupère les valeurs pour vérifier si quelque chose a été mit ou non, puis on les transcrit dans un format valide sql
                 for (proprieties of param){
                     if(param[proprieties] != undefined){
-                        qvalues = qcolumn + ` ${proprieties} = ${param[proprieties]},`
+                        base[proprieties] = param[proprieties];
                     }
                 }
-                if (qvalues.endsWith(',')){
-                    qvalues = qvalues.substring(0, qvalues.length -1 );
-                }
-                else await interaction.reply('aucune modification à faire !');
-
+                db.editWord(id, base);
 
             }
             else await interaction.reply("l'id est invalide")

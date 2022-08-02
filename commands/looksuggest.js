@@ -6,7 +6,11 @@ const { EmbedBuilder} = require('discord.js')
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('looksuggest')
-		.setDescription('permet à awing de regarder les propositions, seul awing peut faire cette commande'),
+		.setDescription('permet à awing de regarder les propositions, seul awing peut faire cette commande')
+		.addIntegerOption(option =>
+			option.setName('offset')
+				  .setDescription('La page de suggestion demandée (n\'oublie pas, n-1')
+		),
         
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){
@@ -26,12 +30,15 @@ module.exports = {
 				.setDescription(proposition.id)
 				.addFields(
 					{name: 'Pierrick', value: proposition.pierrick},
+					{name: 'cyrilique', value: proposition.cyrilic},
+					{name: 'hangeul', value: proposition.hangeul},
 					{name: 'étymologie', value: proposition.etymologie},
 					{name: 'phonetique', value: proposition.phonetique},
 					{name: 'type', value: proposition.type},
 					{name: '\u200b', value: '\u200B'},
+					{name: 'classe grammaticale', value: proposition.class},
 					{name: 'définition', value: proposition.definition},
-					{name: 'commentaire', value: 'commentaire'}
+					{name: 'commentaire', value: proposition.commentaire}
 				)
 				.setFooter({ text: offset + "/" + numberOfSuggestion})
 

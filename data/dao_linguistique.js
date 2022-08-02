@@ -84,7 +84,7 @@ var dao_linguistique = function(){
         });
     }
 
-    this.isIdValid = async function(id) {
+    this.isIdValidWord = async function(id) {
         return new Promise(async function(resolve, reject){
             const query = "SELECT * FROM dictionnaire WHERE id = ?"
             db.get(query, [id], (err, rows) => {
@@ -94,12 +94,35 @@ var dao_linguistique = function(){
         });
     }
 
+    this.isIdValidSuggestion = async function(id) {
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM suggestion WHERE id = ?"
+            db.get(query, [id], (err, rows) => {
+                if(err) reject(err);
+                else if (rows.id == id) resolve(true);
+            });
+        });
+    }
+
     this.editWord = async function(id, values) {
         return new Promise(async function(resolve, reject){
-            const query = "UPDATE dictionnaire SET ? WHERE id = ?"
-            db.run(query, [values, id], (err) => {
+            const query = "UPDATE dictionnaire \
+                            SET francais = ?, pierrick = ?, phonétique = ?, classe = ?,\
+                            commentaire = ?, définition = ?, étymologie = ?, cyrilic = ?, hangeul = ?\
+                            WHERE id = ?"
+            db.run(query, [values.francais, values.pierrick, values.phonétique, values.classe, values.commentaire, values.définition, values.étymologie, values.cyrilic, values.hangeul, id], (err) => {
                 if(err) reject(err);
                 else resolve();
+            });
+        });
+    }
+
+    this.getWord = async function(id) {
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE id = ?"
+            db.get(query, [values, id], (err, rows) => {
+                if(err) reject(err);
+                else resolve(rows);
             });
         });
     }

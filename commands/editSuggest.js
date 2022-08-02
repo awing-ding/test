@@ -46,7 +46,30 @@ module.exports = {
             ),
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){
+            const id = interaction.options.getString('id');
+            if (db.isIdValid(id)) {
+                //obtention des paramètres et ajout dans un objet
+                let param = {}
+                param.pierrick = interaction.options.getString('pierrick');
+                param.définition = interaction.options.getString('definition');
+                param.étymologie = interaction.options.getString('etymologie');
+                param.francais = interaction.options.getString('francais');
+                param.phonétique = interaction.options.getString('phonetique');
+                param.commentaire = interaction.options.getString('commentaire');
+                param.cyrilic = interaction.options.getString('cyrilic');
+                param.hangeul = interaction.options.getString('hangeul');
+                param.classe = interaction.options.getString('class');
+                let base = db.getWord(id);
+                //on récupère les valeurs pour vérifier si quelque chose a été mit ou non, puis on les transcrit dans un format valide sql
+                for (proprieties of param){
+                    if(param[proprieties] != undefined){
+                        base[proprieties] = param[proprieties];
+                    }
+                }
+                db.editWord(id, base);
 
+            }
+            else await interaction.reply("l'id est invalide")
 
         }
         else await interaction.reply('seul awing peut faire cette commande');
