@@ -6,7 +6,8 @@
 using namespace std; 
 
 vector<unsigned char> soundexprk(vector<unsigned char> text){
-    for(int i = 0; i < text.size(); i++) {
+    for(long unsigned 
+    int i = 0; i < text.size(); i++) {
         text[i] = toupper(text[i]);
         unsigned char *chara = &text[i];
         if (*chara == 'A' or *chara == 'E' or *chara == 'I' or *chara == 'O' or *chara == 'U' or *chara == 'Y' or *chara == 'H'
@@ -79,12 +80,26 @@ void soundexout(sqlite3_context *context, int argc, sqlite3_value **argv){
     
 }
 
+static int callback(void *NotUsed,int argc, char** argv, char ** azColName){
+  int i;
+  for(i=0;i<argc;i++){
+    //printf("%s = %s\n",azColName[i], argv[i]?argv[i]:"NULL");
+    cout << azColName[i] << '=' << argv[i] << endl;
+  }
+  //printf("\n");
+  return 0;
+}
 int main(int argc, char const *argv[])
 {
     //string func = &soundexprk;
+    char *error = "error";
+    char **errormsg = &error;
     sqlite3* DB;
     sqlite3_open("../data/database.db", &DB);
+    //sqlite3_exec(DB,"SELECT * FROM dictionnaire WHERE id = 6", callback,0, 0);
     sqlite3_create_function(DB, "soundexprk", 1, SQLITE_ANY, 0, &soundexout, 0, 0);
-
+    sqlite3_exec(DB, "SELECT soundexprk(francais) FROM dictionnaire WHERE id = 6", callback, 0, errormsg);
+    cout << "function created" ;
+    sqlite3_close(DB);
     return 0;
 }

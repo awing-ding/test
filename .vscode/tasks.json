@@ -9,7 +9,9 @@
                 "-g",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "-I",
+                "/usr/include/sqlite-amalgamation-3390200/sqlite.h"
             ],
             "options": {
                 "cwd": "${fileDirname}"
