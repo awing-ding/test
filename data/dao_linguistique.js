@@ -120,7 +120,17 @@ var dao_linguistique = function(){
     this.getWord = async function(id) {
         return new Promise(async function(resolve, reject){
             const query = "SELECT * FROM dictionnaire WHERE id = ?"
-            db.get(query, [values, id], (err, rows) => {
+            db.get(query, [id], (err, rows) => {
+                if(err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    this.searchByFrench = async function(mot){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE soundexprk(francais) = soundexprk(?)";
+            db.all(query, [mot], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
             });

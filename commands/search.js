@@ -16,8 +16,11 @@ module.exports = {
 			subcommand.setName('pierrick')
 					  .setDescription('recherche un mot à partir du pierrick')
 		),
-		
+
 	async execute(interaction) {
-		
+		const mot = interaction.options.getString('mot')
+		if (interaction.options.getSubcommand() == 'francais'){
+			
+		}
 	},
 };
