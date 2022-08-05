@@ -1,4 +1,4 @@
-const db = require('./sqlite_connection')
+const db = require('./sqlite_connection_linguistique')
 
 
 var functions = function(){

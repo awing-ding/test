@@ -1,10 +1,10 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique');
+const db = require('../../data/dao_linguistique');
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('dictionnaireByRegex')
+		.setName('dictionnaire-by-regex')
 		.setDescription('cherche un mot dans le dictionnaire via une regex sql')
 		.addStringOption(option=>
 			option.setName('regex')
@@ -13,7 +13,7 @@ module.exports = {
 		)
 		.addIntegerOption(option =>
 			option.setName('offset')
-				  .setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
+				  .setDescription('le combientième mot vous voulez '))
 		.addSubcommand(subcommand =>
 			subcommand.setName('francais')
 					  .setDescription('rechercher un mot à partir du français')

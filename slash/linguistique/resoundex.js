@@ -1,8 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique');
-const { EmbedBuilder } = require('discord.js');
-const soundex = require('../data/soundex');
-const soundexes = require('../data/soundex');
+const soundex = require('../../data/soundex');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -14,7 +11,7 @@ module.exports = {
 
         )
         .addSubcommand(subcommand =>
-            subcommand.setName('byId')
+            subcommand.setName('byid')
                       .setDescription('ne resoundex qu\'un seul id')
                       .addIntegerOption(option=>
                         option.setName('id')

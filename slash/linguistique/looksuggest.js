@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique');
+const db = require('../../data/dao_linguistique')
 const { EmbedBuilder} = require('discord.js');
 
 

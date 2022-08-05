@@ -1,26 +1,32 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique')
+const db = require('../../data/dao_linguistique')
 
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('decidesuggest')
 		.setDescription('permet à awing de valider ou non les propositions, seul awing peut faire cette commande')
-        .addStringOption(option =>
-            option
-                .setName('id')
-                .setDescription("l'id de la suggestion")
-                .setRequired(true)
-        )
-        .addSubCommand(subcommand =>
+        .addSubcommand(subcommand =>
             subcommand
                 .setName('validate')
                 .setDescription('Valide la suggestion, awing, mon chéri, n\'oublie pas de le faire manuellement si il s\'agit d\'un edit')
+                .addStringOption(option =>
+                    option
+                        .setName('id')
+                        .setDescription("l'id de la suggestion")
+                        .setRequired(true)
+                )
         )
-        .addSubCommand(subcommand =>
+        .addSubcommand(subcommand =>
             subcommand
                 .setName('reject')
                 .setDescription('Rejette la suggestion')
+                .addStringOption(option =>
+                    option
+                        .setName('id')
+                        .setDescription("l'id de la suggestion")
+                        .setRequired(true)
+                )
         ),
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){

@@ -1,5 +1,5 @@
 //comment ca je copie ton système comme un gros porc ?
-const db = require('./sqlite_connection.js');
+const db = require('./sqlite_connection_linguistique.js');
 const soundex = require('./soundex');
 
 var dao_linguistique = function(){

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique')
+const db = require('../../data/dao_linguistique')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -26,7 +26,7 @@ module.exports = {
             )
         .addStringOption( option =>
             option.setName('phonetique')
-                  .setDescription("l'écriture de votre mot en alphabet phonétique international, vous pouvez utiliser la commande /phonetize pour l'obtenir")
+                  .setDescription("l'écriture de votre mot en API, vous pouvez utiliser la commande /phonetize pour l'obtenir")
             )
         .addStringOption( option =>
             option.setName('class')
@@ -47,10 +47,10 @@ module.exports = {
         .addStringOption( option=>
             option.setName('type')
                   .setDescription("si votre demande consiste à modifier un mot existant ou à en créer un")
-                  .addChoices(
+                  .addChoices([
                     {name: 'add', value: 'add'},
                     {name: 'edit', value: 'edit'}
-                  )
+                  ])
             ),
         
         
@@ -61,7 +61,7 @@ module.exports = {
                 //génère un identifiant aléatoire
                 id = Math.ceil(Math.random() * 9) + id; 
             }
-        } while(!db.isPropositionIdTaken(id));
+        } while(!await db.isPropositionIdTaken(id));
         let suggestion = {
             'id': id,
             'instigateur': interaction.user.id,

@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-import * as correspondance from "../data/phonetique.json";
+const correspondance = require("../../data/phonetique.json");
 
 module.exports = {
 	data: new SlashCommandBuilder()

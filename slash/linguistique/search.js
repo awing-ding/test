@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../data/dao_linguistique');
+const db = require('../../data/dao_linguistique');
 const { EmbedBuilder } = require('discord.js');
-const soundex = require('../data/soundex');
+const soundex = require('../../data/soundex');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -13,7 +13,7 @@ module.exports = {
 				.addIntegerOption(option =>
 					option.setName('id')
 						  .setDescription("l'id du mot")
-						  .setRequired(True)
+						  .setRequired(true)
 					)
 		)
 		.addSubcommand(subcommand =>
@@ -26,7 +26,7 @@ module.exports = {
 				)
 				.addIntegerOption(option =>
 					option.setName('offset')
-						.setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
+						.setDescription('le combientième mot vous voulez'))
 		)
 		.addSubcommand(subcommand =>
 			subcommand.setName('pierrick')
@@ -38,7 +38,7 @@ module.exports = {
 				)
 				.addIntegerOption(option =>
 					option.setName('offset')
-						  .setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
+						  .setDescription('le combientième mot vous voulez '))
 		),
 
 	async execute(interaction) {
