@@ -5,6 +5,7 @@
 
 using namespace std; 
 
+//soundex algorithm
 vector<unsigned char> soundexprk(vector<unsigned char> text){
     for(long unsigned 
     int i = 0; i < text.size(); i++) {
@@ -62,6 +63,8 @@ vector<unsigned char> soundexprk(vector<unsigned char> text){
     return text;
 
 }
+
+//parse the sqlite input and prepare it for the soundex algorithm 
 void soundexout(sqlite3_context *context, int argc, sqlite3_value **argv){
     if (argc == 1)
     {
@@ -80,26 +83,27 @@ void soundexout(sqlite3_context *context, int argc, sqlite3_value **argv){
     
 }
 
+//short callback to show into the console the sql output
 static int callback(void *NotUsed,int argc, char** argv, char ** azColName){
   int i;
   for(i=0;i<argc;i++){
-    //printf("%s = %s\n",azColName[i], argv[i]?argv[i]:"NULL");
     cout << azColName[i] << '=' << argv[i] << endl;
   }
-  //printf("\n");
   return 0;
 }
+
+//Open db to create the function, then close it
 int main(int argc, char const *argv[])
 {
-    //string func = &soundexprk;
-    char *error = "error";
-    char **errormsg = &error;
+    char *errora = NULL;
+    char **error = &errora;
     sqlite3* DB;
     sqlite3_open("../data/database.db", &DB);
     //sqlite3_exec(DB,"SELECT * FROM dictionnaire WHERE id = 6", callback,0, 0);
-    sqlite3_create_function(DB, "soundexprk", 1, SQLITE_ANY, 0, &soundexout, 0, 0);
-    sqlite3_exec(DB, "SELECT soundexprk(francais) FROM dictionnaire WHERE id = 6", callback, 0, errormsg);
-    cout << "function created" ;
+    sqlite3_create_function16(DB, "soundexprk", 1, SQLITE_UTF16, 0, &soundexout, 0, 0);
+    sqlite3_exec(DB, "SELECT soundexprk(francais) FROM dictionnaire WHERE id = 6", callback, 0, error); //test to see if the function is implemented into sqlite
+    cout << *error << endl; //gimme the error dude 
+    //cout << "function created" ;
     sqlite3_close(DB);
     return 0;
 }

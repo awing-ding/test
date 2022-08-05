@@ -1,15 +1,14 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../data/dao_linguistique');
 const { EmbedBuilder } = require('discord.js');
-const soundex = require('../data/soundex');
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('dictionnaire')
-		.setDescription('cherche un mot dans le dictionnaire')
+		.setName('dictionnaireByRegex')
+		.setDescription('cherche un mot dans le dictionnaire via une regex sql')
 		.addStringOption(option=>
-			option.setName('mot')
-				  .setDescription('le mot à rechercher')
+			option.setName('regex')
+				  .setDescription('la regex (format sql (opérateur like)) avec laquelle le mot sera recherchée')
 				  .setRequired(true)
 		)
 		.addIntegerOption(option =>
@@ -25,11 +24,10 @@ module.exports = {
 		),
 
 	async execute(interaction) {
-		const mot = interaction.options.getString('mot')
+        const regex = interaction.options.getString('regex')
 		const offset = interaction.options.getInteger('offset');
 		if (interaction.options.getSubcommand() == 'francais'){
-			let soundexedMot = soundex.soundex(mot);
-			let list = await db.searchByFrench(soundexedMot, offset);
+			let list = await db.searchByFrench(regex, offset);
 			let i = 0;
 			for (const element of list) {
 				const embedSearch = new EmbedBuilder()
@@ -57,8 +55,7 @@ module.exports = {
 			}
 		}
 		else if (interaction.options.getSubcommand() == 'pierrick'){
-			let soundexedMot = soundex.soundex(mot);
-			let list = await db.searchByPierrick(soundexedMot, offset);
+			let list = await db.searchByPierrick(regex, offset);
 			let i = 0;
 			for (const element of list) {
 				const embedSearch = new EmbedBuilder()
@@ -85,5 +82,5 @@ module.exports = {
 				i++;
 			}
 		}
-	},
-};
+    }
+}

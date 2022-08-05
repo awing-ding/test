@@ -1,5 +1,5 @@
 //comment ca je copie ton système comme un gros porc ?
-const db = require('./sqlite_connection');
+const db = require('./sqlite_connection.js');
 
 var dao_linguistique = function(){
 
@@ -15,7 +15,7 @@ var dao_linguistique = function(){
 
     this.isPropositionIdTaken = async function(id) {
         return new Promise(async function(resolve,reject){
-            const query = "SELECT * FROM proposition WHERE id = ?"
+            const query = "SELECT * FROM proposition WHERE id = ?;"
             db.each(query,[id],(err,row)=>{
                 if(err) reject(err);
                 else if(row.id == id) resolve(true);
@@ -25,7 +25,7 @@ var dao_linguistique = function(){
 
     this.lookToProposition = async function(offset) {
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM suggestion LIMIT 1 OFFSET ?"
+            const query = "SELECT * FROM suggestion LIMIT 1 OFFSET ?;"
             db.all(query,[offset], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
@@ -36,7 +36,7 @@ var dao_linguistique = function(){
     this.countProposition = async function() {
         //le résultat est dans la clé 'count'
         return new Promise(async function(resolve, reject){
-            const query = "SELECT COUNT(*) AS count FROM suggestion"
+            const query = "SELECT COUNT(*) AS count FROM suggestion;"
             db.get(query, (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
@@ -46,7 +46,7 @@ var dao_linguistique = function(){
 
     this.validateAddition = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "INSERT INTO dictionnaire (francais, pierrick, phonetique, commentaire, definition, étmologie) VALUES (SELECT francais, pierrick, phonetique, commentaire, definition, etymologie FROM suggestion WHERE id = ?)"
+            const query = "INSERT INTO dictionnaire (francais, pierrick, phonetique, commentaire, definition, étmologie) VALUES (SELECT francais, pierrick, phonetique, commentaire, definition, etymologie FROM suggestion WHERE id = ?);"
             db.run(query, [id], (err) => {
                 if (err) reject(err);
                 resolve();
@@ -56,7 +56,7 @@ var dao_linguistique = function(){
 
     this.purgeProposition = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "DELETE FROM suggestion WHERE id = ?"
+            const query = "DELETE FROM suggestion WHERE id = ?;"
             db.run(query, [id], (err) => {
                 if (err) reject(err);
                 resolve;
@@ -66,7 +66,7 @@ var dao_linguistique = function(){
 
     this.rejectProposition = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "DELETE FROM suggestion WHERE id = ?"
+            const query = "DELETE FROM suggestion WHERE id = ?;"
             db.run(query, [id], (err) => {
                 if (err) reject(err);
                 resolve;
@@ -76,7 +76,7 @@ var dao_linguistique = function(){
 
     this.getPropositionById = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM suggestion WHERE id = ?"
+            const query = "SELECT * FROM suggestion WHERE id = ?;"
             db.get(query, [id], (err, rows) =>{
                 if (err) reject(err);
                 else resolve(rows);
@@ -86,7 +86,7 @@ var dao_linguistique = function(){
 
     this.isIdValidWord = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE id = ?"
+            const query = "SELECT * FROM dictionnaire WHERE id = ?;"
             db.get(query, [id], (err, rows) => {
                 if(err) reject(err);
                 else if (rows.id == id) resolve(true);
@@ -96,7 +96,7 @@ var dao_linguistique = function(){
 
     this.isIdValidSuggestion = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM suggestion WHERE id = ?"
+            const query = "SELECT * FROM suggestion WHERE id = ?;"
             db.get(query, [id], (err, rows) => {
                 if(err) reject(err);
                 else if (rows.id == id) resolve(true);
@@ -109,7 +109,7 @@ var dao_linguistique = function(){
             const query = "UPDATE dictionnaire \
                             SET francais = ?, pierrick = ?, phonétique = ?, classe = ?,\
                             commentaire = ?, définition = ?, étymologie = ?, cyrilic = ?, hangeul = ?\
-                            WHERE id = ?"
+                            WHERE id = ?;"
             db.run(query, [values.francais, values.pierrick, values.phonétique, values.classe, values.commentaire, values.définition, values.étymologie, values.cyrilic, values.hangeul, id], (err) => {
                 if(err) reject(err);
                 else resolve();
@@ -119,7 +119,7 @@ var dao_linguistique = function(){
 
     this.getWord = async function(id) {
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE id = ?"
+            const query = "SELECT * FROM dictionnaire WHERE id = ?;"
             db.get(query, [id], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
@@ -127,14 +127,49 @@ var dao_linguistique = function(){
         });
     }
 
-    this.searchByFrench = async function(mot){
+    this.searchByFrench = async function(soundexedMot, offset){
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE soundexprk(francais) = soundexprk(?)";
-            db.all(query, [mot], (err, rows) => {
+            const query = "SELECT * FROM dictionnaire WHERE francais = ? LIMIT 5 OFFSET ?;";
+            db.all(query, [soundexedMot, offset], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
             });
         });
+    }
+
+    this.searchByPierrick = async function(soundexedMot, offset){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE pierrick = ? LIMIT 5 OFFSET ?;";
+            db.all(query, [soundexedMot, offset], (err, rows) => {
+                if(err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    this.searchByFrenchRegex = async function(regex, offset){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE francais LIKE ? LIMIT 5 OFFSET ?;";
+            db.all(query, [regex, offset], (err, rows) => {
+                if(err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    this.searchByPierrickRegex = async function(regex, offset){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE pierrick LIKE ? LIMIT 5 OFFSET ?;";
+            db.all(query, [regex, offset], (err, rows) => {
+                if(err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+    this.searchNoSoundex = async function(offset){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE soundexprk = NULL and soundexfr = NULL LIMIT 5 OFFSET ?;"
+        })
     }
 }
 const dao = new dao_linguistique();
