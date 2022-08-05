@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../data/dao_linguistique');
 const { EmbedBuilder } = require('discord.js');
 const soundex = require('../data/soundex');
+const soundexes = require('../data/soundex');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -30,13 +31,25 @@ module.exports = {
             ),
 
     async execute(interaction) {
-        if (interaction.options.getSubcommand() == 'all'){
-            soundex.initSoundex();
-            await interaction.reply('soundex réinitialisé');
-        }
-        else if (interaction.options.getSubcommand() == 'search'){
-            let offset = interaction.options.getInteger('offset');
-            
-        }
+        if (interaction.user.id == '361257883247050762'){
+            if (interaction.options.getSubcommand() == 'all'){
+                soundex.initSoundex();
+                await interaction.reply('soundex réinitialisé');
+            }
+            else if (interaction.options.getSubcommand() == 'search'){
+                let offset = interaction.options.getInteger('offset');
+                if (offset == 'undefined') offset = 0;
+                result = await soundex.searchNoSoundex(offset);
+                let list = "";
+                for (const element of result){
+                    list += `${element.id}, `;
+                }
+                await interaction.reply(list);
+            }
+            else if (interaction.options.getSubcommand() == 'byId'){
+                const id = interaction.options.getInteger('id');
+                soundex.soundexId(id);
+            }
+    }
     }
 }

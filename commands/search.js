@@ -7,21 +7,38 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('dictionnaire')
 		.setDescription('cherche un mot dans le dictionnaire')
-		.addStringOption(option=>
-			option.setName('mot')
-				  .setDescription('le mot à rechercher')
-				  .setRequired(true)
+		.addSubcommand(subcommand =>
+			subcommand.setName('id')
+					  .setDescription("recherche un mot directement par son id")
+				.addIntegerOption(option =>
+					option.setName('id')
+						  .setDescription("l'id du mot")
+						  .setRequired(True)
+					)
 		)
-		.addIntegerOption(option =>
-			option.setName('offset')
-				  .setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
 		.addSubcommand(subcommand =>
 			subcommand.setName('francais')
 					  .setDescription('rechercher un mot à partir du français')
+				.addStringOption(option=>
+					option.setName('mot')
+						.setDescription('le mot à rechercher')
+						.setRequired(true)
+				)
+				.addIntegerOption(option =>
+					option.setName('offset')
+						.setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
 		)
 		.addSubcommand(subcommand =>
 			subcommand.setName('pierrick')
 					  .setDescription('recherche un mot à partir du pierrick')
+				.addStringOption(option=>
+					option.setName('mot')
+						  .setDescription('le mot à rechercher')
+						  .setRequired(true)
+				)
+				.addIntegerOption(option =>
+					option.setName('offset')
+						  .setDescription('le combientième mot vous voulez (à utiliser si une première requête a retourné + de 5 résultats par exemple'))
 		),
 
 	async execute(interaction) {
@@ -84,6 +101,26 @@ module.exports = {
 				}
 				i++;
 			}
+		}
+		else if (interaction.options.getSubcommand == 'id'){
+			const id = interaction.options.getInteger(id);
+			const element = await db.getWord(id)
+			const embedSearch = new EmbedBuilder()
+					.setColor(0x0000FF)
+					.setTitle(element.francais)
+					.setDescription(element.pierrick)
+					.addFields(
+						{name: 'cyrilique', value: element.cyrilic},
+						{name: 'hangeul', value: element.hangeul},
+						{name: 'étymologie', value: element.etymologie},
+						{name: 'phonetique', value: element.phonetique},
+						{name: 'type', value: element.type},
+						{name: '\u200b', value: '\u200B'},
+						{name: 'classe grammaticale', value: element.class},
+						{name: 'définition', value: element.definition},
+						{name: 'commentaire', value: element.commentaire}
+					)
+			await interaction.reply({embeds: [embedSearch]});
 		}
 	},
 };

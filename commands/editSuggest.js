@@ -60,7 +60,7 @@ module.exports = {
                 param.hangeul = interaction.options.getString('hangeul');
                 param.classe = interaction.options.getString('class');
                 let base = db.getWord(id);
-                //on récupère les valeurs pour vérifier si quelque chose a été mit ou non, puis on les transcrit dans un format valide sql
+                //on récupère les valeurs pour vérifier si quelque chose a été mit ou non, puis on remplace les valeurs par défaut par les valeurs utilisateurs
                 for (proprieties of param){
                     if(param[proprieties] != undefined){
                         base[proprieties] = param[proprieties];

@@ -152,7 +152,7 @@ var functions = function(){
                 let soundexed = soundex(row.francais);
                 db.run(outputQuery, [soundexed, row.id], (err) => {
                     if (err) console.log(err);
-                })
+                });
             }
         });
 
@@ -164,8 +164,33 @@ var functions = function(){
                 let soundexed = soundex(row.pierrick);
                 db.run(outputQueryPrk, [soundexed, row.id], (err) => {
                     if (err) console.log(err);
-                })
+                });
             }
+        });
+    }
+
+    this.soundexId = function sondexId(id){
+        let inputQuery = "SELECT id, francais, pierrick FROM dictionnaire WHERE id = ?; "
+        let outputQuery = "UPDATE dictionnaire SET soundexfr = ?, soundexprk = ? WHERE id = ?"
+        db.get(inputQuery,[id], (err, row)=>{
+            if (err) console.log(err);
+            else {
+                let francaisSoundexed = soundex(row.francais);
+                let pierrickSoundexed = soundex(row.pierrick);
+                db.run(outputQuery, [francaisSoundexed, pierrickSoundexed, row.id], (err)=>{
+                    console.log(err);
+                });
+            }
+        });
+    }
+
+    this.searchNoSoundex = async function(offset){
+        return new Promise(async function(resolve, reject){
+            const query = "SELECT * FROM dictionnaire WHERE soundexprk = NULL and soundexfr = NULL LIMIT 5 OFFSET ?;"
+            db.all(query, [offset], (err, rows)=> {
+                if(err) reject(err);
+                else resolve(rows);
+            });
         });
     }
 }

@@ -1,5 +1,6 @@
 //comment ca je copie ton système comme un gros porc ?
 const db = require('./sqlite_connection.js');
+const soundex = require('./soundex');
 
 var dao_linguistique = function(){
 
@@ -112,7 +113,10 @@ var dao_linguistique = function(){
                             WHERE id = ?;"
             db.run(query, [values.francais, values.pierrick, values.phonétique, values.classe, values.commentaire, values.définition, values.étymologie, values.cyrilic, values.hangeul, id], (err) => {
                 if(err) reject(err);
-                else resolve();
+                else {
+                    soundex.soundexId(values.id);
+                    resolve();
+                }
             });
         });
     }
@@ -166,11 +170,8 @@ var dao_linguistique = function(){
             });
         });
     }
-    this.searchNoSoundex = async function(offset){
-        return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE soundexprk = NULL and soundexfr = NULL LIMIT 5 OFFSET ?;"
-        })
-    }
+
+
 }
 const dao = new dao_linguistique();
 module.exports = dao;
