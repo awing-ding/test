@@ -47,10 +47,10 @@ module.exports = {
         .addStringOption( option=>
             option.setName('type')
                   .setDescription("si votre demande consiste à modifier un mot existant ou à en créer un")
-                  .addChoices([
+                  .addChoices(
                     {name: 'add', value: 'add'},
                     {name: 'edit', value: 'edit'}
-                  ])
+                  )
             ),
         
         
