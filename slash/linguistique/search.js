@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../../data/dao_linguistique');
-const { EmbedBuilder } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 const soundex = require('../../data/soundex');
 
 module.exports = {
@@ -43,13 +43,14 @@ module.exports = {
 
 	async execute(interaction) {
 		const mot = interaction.options.getString('mot')
-		const offset = interaction.options.getInteger('offset');
+		let offset = interaction.options.getInteger('offset');
+		if (offset == 'undefined') offset = 0;
 		if (interaction.options.getSubcommand() == 'francais'){
 			let soundexedMot = soundex.soundex(mot);
 			let list = await db.searchByFrench(soundexedMot, offset);
 			let i = 0;
 			for (const element of list) {
-				const embedSearch = new EmbedBuilder()
+				const embedSearch = new MessageEmbed()
 					.setColor(0x0000FF)
 					.setTitle(element.francais)
 					.setDescription(element.pierrick)
@@ -74,11 +75,17 @@ module.exports = {
 			}
 		}
 		else if (interaction.options.getSubcommand() == 'pierrick'){
+			console.log('pierrick presoundex');
+			if (offset == 'undefined' || offset == null) offset = 0;
 			let soundexedMot = soundex.soundex(mot);
+			console.log('pierrick predb')
 			let list = await db.searchByPierrick(soundexedMot, offset);
 			let i = 0;
+			console.log('pierrick preparser')
+			await interaction.deferReply();
 			for (const element of list) {
-				const embedSearch = new EmbedBuilder()
+				console.log('loop prébuild');
+				const embedSearch = new MessageEmbed()
 					.setColor(0x0000FF)
 					.setTitle(element.francais)
 					.setDescription(element.pierrick)
@@ -93,8 +100,9 @@ module.exports = {
 						{name: 'définition', value: element.definition},
 						{name: 'commentaire', value: element.commentaire}
 					)
+				console.log(i);
 				if (i == 0){
-					await interaction.reply({embeds: [embedSearch]});
+					await interaction.editReply({embeds: [embedSearch]});
 				}
 				else {
 					await interaction.followUp({embeds: [embedSearch]});
@@ -103,9 +111,12 @@ module.exports = {
 			}
 		}
 		else if (interaction.options.getSubcommand == 'id'){
+			await interaction.deferReply();
 			const id = interaction.options.getInteger(id);
+			console.log('predb');
 			const element = await db.getWord(id)
-			const embedSearch = new EmbedBuilder()
+			console.log('pre embed')
+			const embedSearch = new MessageEmbed()
 					.setColor(0x0000FF)
 					.setTitle(element.francais)
 					.setDescription(element.pierrick)
@@ -120,7 +131,8 @@ module.exports = {
 						{name: 'définition', value: element.definition},
 						{name: 'commentaire', value: element.commentaire}
 					)
-			await interaction.reply({embeds: [embedSearch]});
+			
+			await interaction.editReply({embeds: [embedSearch]});
 		}
 	},
 };

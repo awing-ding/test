@@ -1,36 +1,45 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../../data/dao_linguistique');
-const { EmbedBuilder } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('dictionnaire-by-regex')
 		.setDescription('cherche un mot dans le dictionnaire via une regex sql')
-		.addStringOption(option=>
-			option.setName('regex')
-				  .setDescription('la regex (format sql (opérateur like)) avec laquelle le mot sera recherchée')
-				  .setRequired(true)
-		)
-		.addIntegerOption(option =>
-			option.setName('offset')
-				  .setDescription('le combientième mot vous voulez '))
 		.addSubcommand(subcommand =>
 			subcommand.setName('francais')
 					  .setDescription('rechercher un mot à partir du français')
+					  .addStringOption(option=>
+						option.setName('regex')
+							  .setDescription('la regex (format sql (opérateur like)) avec laquelle le mot sera recherchée')
+							  .setRequired(true)
+					)
+					.addIntegerOption(option =>
+						option.setName('offset')
+							  .setDescription('le combientième mot vous voulez '))
 		)
 		.addSubcommand(subcommand =>
 			subcommand.setName('pierrick')
 					  .setDescription('recherche un mot à partir du pierrick')
+					  .addStringOption(option=>
+						option.setName('regex')
+							  .setDescription('la regex (format sql (opérateur like)) avec laquelle le mot sera recherchée')
+							  .setRequired(true)
+					)
+					.addIntegerOption(option =>
+						option.setName('offset')
+							  .setDescription('le combientième mot vous voulez '))
 		),
 
 	async execute(interaction) {
         const regex = interaction.options.getString('regex')
-		const offset = interaction.options.getInteger('offset');
+		let offset = interaction.options.getInteger('offset');
+		if (offset == 'undefined') offset = 0;
 		if (interaction.options.getSubcommand() == 'francais'){
 			let list = await db.searchByFrench(regex, offset);
 			let i = 0;
 			for (const element of list) {
-				const embedSearch = new EmbedBuilder()
+				const embedSearch = new MessageEmbed()
 					.setColor(0x0000FF)
 					.setTitle(element.francais)
 					.setDescription(element.pierrick)
@@ -58,7 +67,7 @@ module.exports = {
 			let list = await db.searchByPierrick(regex, offset);
 			let i = 0;
 			for (const element of list) {
-				const embedSearch = new EmbedBuilder()
+				const embedSearch = new MessageEmbed()
 					.setColor(0x0000FF)
 					.setTitle(element.francais)
 					.setDescription(element.pierrick)

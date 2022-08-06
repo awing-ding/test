@@ -6,7 +6,7 @@ var dao_linguistique = function(){
 
     this.addProposition = async function(args) {
         return new Promise(async function(resolve,reject){
-            const query = "INSERT INTO proposition VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+            const query = "INSERT INTO suggestion VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
             db.run(query,[args.id, args.instigateur, args.francais, args.pierrick, args.phonetique, args.commentaire, args.definition, args.etymologie, args.class, args.type, args.cyrilic, args.hangeul],(err)=>{
                 if(err) reject(err);
                 resolve();
@@ -16,10 +16,11 @@ var dao_linguistique = function(){
 
     this.isPropositionIdTaken = async function(id) {
         return new Promise(async function(resolve,reject){
-            const query = "SELECT * FROM proposition WHERE id = ?;"
+            const query = "SELECT * FROM suggestion WHERE id = ?;"
             db.each(query,[id],(err,row)=>{
                 if(err) reject(err);
                 else if(row.id == id) resolve(true);
+                else resolve(false);
             });
         });
     } 

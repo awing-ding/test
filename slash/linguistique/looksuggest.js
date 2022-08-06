@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const db = require('../../data/dao_linguistique')
-const { EmbedBuilder} = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 
 module.exports = {
@@ -16,31 +16,49 @@ module.exports = {
 		if (interaction.user.id == '361257883247050762'){
 
 			let offset = 0
-			const numberOfSuggestion = await db.countProposition().count;
-            await interaction.user.dmChannel.send('test');
-			if (numberOfSuggestion == 0) {
+			const numberOfSuggestion = await db.countProposition();
+			if (numberOfSuggestion.count == '0') {
 				await interaction.reply("il n'y a pas de suggestion pour le moment");
 			}
 			else {
 				proposition = db.lookToProposition(offset);
-				const embedProposition = new EmbedBuilder()
+				const title = "" + proposition.francais;
+				let author = '';
+				try {
+					author = "" + await interaction.client.users.fetch(proposition.instigateur);
+				} catch (error) {
+					console.log('error: user not found ' + error);	
+					author = "error";
+				}
+				const description = "" + proposition.id;
+				const pierrick = "" + proposition.pierrick;
+				const cyrilic = "" + proposition.cyrilic;
+				const hangeul = "" + proposition.hangeul;
+				const etymologie = "" + proposition.etymologie;
+				const phonetique = "" + proposition.phonetique;
+				const type = "" + proposition.type;
+				const classe = "" + proposition.class;
+				const definition = "" + proposition.definition;
+				const commentaire = "" + proposition.commentaire;
+				const pagination = `${offset} / ${numberOfSuggestion}`
+				const embedProposition = new MessageEmbed()
 				.setColor(0x0011FF)
-				.setAuthor({name: proposition.instigateur})
-				.setTitle(proposition.francais)
-				.setDescription(proposition.id)
+				.setAuthor(author)
+				.setTitle(title)
+				.setDescription(description)
 				.addFields(
-					{name: 'Pierrick', value: proposition.pierrick},
-					{name: 'cyrilique', value: proposition.cyrilic},
-					{name: 'hangeul', value: proposition.hangeul},
-					{name: 'étymologie', value: proposition.etymologie},
-					{name: 'phonetique', value: proposition.phonetique},
-					{name: 'type', value: proposition.type},
+					{name: 'Pierrick', value: pierrick},
+					{name: 'cyrilique', value: cyrilic},
+					{name: 'hangeul', value: hangeul},
+					{name: 'étymologie', value: etymologie},
+					{name: 'phonetique', value: phonetique},
+					{name: 'type', value: type},
 					{name: '\u200b', value: '\u200B'},
-					{name: 'classe grammaticale', value: proposition.class},
-					{name: 'définition', value: proposition.definition},
-					{name: 'commentaire', value: proposition.commentaire}
+					{name: 'classe grammaticale', value: classe},
+					{name: 'définition', value: definition},
+					{name: 'commentaire', value: commentaire}
 				)
-				.setFooter({ text: offset + "/" + numberOfSuggestion})
+				.setFooter(`${pagination}`)
 
 				await interaction.reply({embeds: [embedProposition],});
 			}

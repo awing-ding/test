@@ -149,7 +149,7 @@ var functions = function(){
         db.each(inputQuery, (err, row)=>{
             if (err) console.log(err);
             else{
-                let soundexed = soundex(row.francais);
+                let soundexed = this.soundex(row.francais);
                 db.run(outputQuery, [soundexed, row.id], (err) => {
                     if (err) console.log(err);
                 });
@@ -161,7 +161,7 @@ var functions = function(){
         db.each(inputQueryPrk, (err, row)=>{
             if (err) console.log(err);
             else{
-                let soundexed = soundex(row.pierrick);
+                let soundexed = this.soundex(row.pierrick);
                 db.run(outputQueryPrk, [soundexed, row.id], (err) => {
                     if (err) console.log(err);
                 });
@@ -175,10 +175,10 @@ var functions = function(){
         db.get(inputQuery,[id], (err, row)=>{
             if (err) console.log(err);
             else {
-                let francaisSoundexed = soundex(row.francais);
-                let pierrickSoundexed = soundex(row.pierrick);
+                let francaisSoundexed = this.soundex(row.francais);
+                let pierrickSoundexed = this.soundex(row.pierrick);
                 db.run(outputQuery, [francaisSoundexed, pierrickSoundexed, row.id], (err)=>{
-                    console.log(err);
+                    if (err) console.log(err);
                 });
             }
         });

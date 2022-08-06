@@ -5,6 +5,13 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('suggest')
 		.setDescription('suggérer la création ou la modification d\'un mot')
+        .addStringOption( option=>
+            option.setName('type')
+                  .setDescription("si votre demande consiste à modifier un mot existant ou à en créer un")
+                  .addChoices([[ 'add', 'add'], [ 'edit', 'edit']]
+                  )
+                  .setRequired(true)
+            )
         .addStringOption(option =>
             option.setName('pierrick')
                   .setDescription('Le mot en pierrick')
@@ -43,25 +50,18 @@ module.exports = {
         .addStringOption( option =>
             option.setName('hangeul')
                   .setDescription('l\'écriture de votre mot en hangeul')
-            )
-        .addStringOption( option=>
-            option.setName('type')
-                  .setDescription("si votre demande consiste à modifier un mot existant ou à en créer un")
-                  .addChoices(
-                    {name: 'add', value: 'add'},
-                    {name: 'edit', value: 'edit'}
-                  )
             ),
         
         
 	async execute(interaction) {
+        await interaction.deferReply();
+        let id = ""
         do {
-            let id = ""
             for (let i = 0; i <= 8; i++){
                 //génère un identifiant aléatoire
                 id = Math.ceil(Math.random() * 9) + id; 
             }
-        } while(!await db.isPropositionIdTaken(id));
+        } while(await db.isPropositionIdTaken(id));
         let suggestion = {
             'id': id,
             'instigateur': interaction.user.id,
@@ -77,6 +77,6 @@ module.exports = {
             'hangeul': interaction.options.getString('hangeul')
         };
         await db.addProposition(suggestion);
-        await interaction.reply('<@361257883247050762> une nouvelle suggestion a été postée')
+        await interaction.editReply('<@361257883247050762> une nouvelle suggestion a été postée')
 	},
 };

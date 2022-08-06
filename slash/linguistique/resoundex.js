@@ -16,6 +16,7 @@ module.exports = {
                       .addIntegerOption(option=>
                         option.setName('id')
                               .setDescription('l\'id du mot à resoundex')
+                              .setRequired(true)
                         )
             )
         .addSubcommand(subcommand =>
@@ -30,22 +31,23 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id == '361257883247050762'){
             if (interaction.options.getSubcommand() == 'all'){
-                soundex.initSoundex();
+                await soundex.initSoundex();
                 await interaction.reply('soundex réinitialisé');
             }
             else if (interaction.options.getSubcommand() == 'search'){
                 let offset = interaction.options.getInteger('offset');
-                if (offset == 'undefined') offset = 0;
+                if (offset == 'undefined' || offset == 'null' || offset == null) { offset = 0; }
                 result = await soundex.searchNoSoundex(offset);
-                let list = "";
+                let list = "id: ";
                 for (const element of result){
                     list += `${element.id}, `;
                 }
                 await interaction.reply(list);
             }
-            else if (interaction.options.getSubcommand() == 'byId'){
+            else if (interaction.options.getSubcommand() == 'byid'){
                 const id = interaction.options.getInteger('id');
                 soundex.soundexId(id);
+                await interaction.reply('done');
             }
     }
     }

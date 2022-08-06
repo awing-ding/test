@@ -1,0 +1,12 @@
+commande fonctionnelle:
+
+/phonetize
+/looksuggest
+/resoundex
+
+
+commande non fonctionneles:
+bloc search
+/suggest
+
+en cours:
