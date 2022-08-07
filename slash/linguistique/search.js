@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../../data/dao_linguistique');
+const {db_linguistique, soundex} = require('../../data/dao_linguistique');
 const { MessageEmbed } = require('discord.js');
-const soundex = require('../../data/soundex');
+const db = db_linguistique;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -49,29 +49,32 @@ module.exports = {
 			let soundexedMot = soundex.soundex(mot);
 			let list = await db.searchByFrench(soundexedMot, offset);
 			let i = 0;
-			for (const element of list) {
-				const embedSearch = new MessageEmbed()
-					.setColor(0x0000FF)
-					.setTitle(element.francais)
-					.setDescription(element.pierrick)
-					.addFields(
-						{name: 'cyrilique', value: element.cyrilic},
-						{name: 'hangeul', value: element.hangeul},
-						{name: 'étymologie', value: element.etymologie},
-						{name: 'phonetique', value: element.phonetique},
-						{name: 'type', value: element.type},
-						{name: '\u200b', value: '\u200B'},
-						{name: 'classe grammaticale', value: element.class},
-						{name: 'définition', value: element.definition},
-						{name: 'commentaire', value: element.commentaire}
-					)
-				if (i == 0){
-					await interaction.reply({embeds: [embedSearch]});
+			if(list.length == 0) await interaction.editReply("le mot n'a pas été trouvé");
+			else {
+				for (const element of list) {
+					const embedSearch = new MessageEmbed()
+						.setColor(0x0000FF)
+						.setTitle(element.francais)
+						.setDescription(element.pierrick)
+						.addFields(
+							{name: 'cyrilique', value: element.cyrilic},
+							{name: 'hangeul', value: element.hangeul},
+							{name: 'étymologie', value: element.etymologie},
+							{name: 'phonetique', value: element.phonetique},
+							{name: 'type', value: element.type},
+							{name: '\u200b', value: '\u200B'},
+							{name: 'classe grammaticale', value: element.class},
+							{name: 'définition', value: element.definition},
+							{name: 'commentaire', value: element.commentaire}
+						)
+					if (i == 0){
+						await interaction.reply({embeds: [embedSearch]});
+					}
+					else {
+						await interaction.followUp({embeds: [embedSearch]});
+					}
+					i++;
 				}
-				else {
-					await interaction.followUp({embeds: [embedSearch]});
-				}
-				i++;
 			}
 		}
 		else if (interaction.options.getSubcommand() == 'pierrick'){
@@ -82,32 +85,36 @@ module.exports = {
 			let list = await db.searchByPierrick(soundexedMot, offset);
 			let i = 0;
 			console.log('pierrick preparser')
+			console.log(list);
 			await interaction.deferReply();
-			for (const element of list) {
-				console.log('loop prébuild');
-				const embedSearch = new MessageEmbed()
-					.setColor(0x0000FF)
-					.setTitle(element.francais)
-					.setDescription(element.pierrick)
-					.addFields(
-						{name: 'cyrilique', value: element.cyrilic},
-						{name: 'hangeul', value: element.hangeul},
-						{name: 'étymologie', value: element.etymologie},
-						{name: 'phonetique', value: element.phonetique},
-						{name: 'type', value: element.type},
-						{name: '\u200b', value: '\u200B'},
-						{name: 'classe grammaticale', value: element.class},
-						{name: 'définition', value: element.definition},
-						{name: 'commentaire', value: element.commentaire}
-					)
-				console.log(i);
-				if (i == 0){
-					await interaction.editReply({embeds: [embedSearch]});
+			if (list.length == 0) await interaction.editReply('le mot n\'a pas été trouvé');
+			else {
+				for (const element of list) {
+					console.log('loop prébuild');
+					const embedSearch = new MessageEmbed()
+						.setColor(0x0000FF)
+						.setTitle(element.francais)
+						.setDescription(element.pierrick)
+						.addFields(
+							{name: 'cyrilique', value: element.cyrilic},
+							{name: 'hangeul', value: element.hangeul},
+							{name: 'étymologie', value: element.etymologie},
+							{name: 'phonetique', value: element.phonetique},
+							{name: 'type', value: element.type},
+							{name: '\u200b', value: '\u200B'},
+							{name: 'classe grammaticale', value: element.class},
+							{name: 'définition', value: element.definition},
+							{name: 'commentaire', value: element.commentaire}
+						)
+					console.log(i);
+					if (i == 0){
+						await interaction.editReply({embeds: [embedSearch]});
+					}
+					else {
+						await interaction.followUp({embeds: [embedSearch]});
+					}
+					i++;
 				}
-				else {
-					await interaction.followUp({embeds: [embedSearch]});
-				}
-				i++;
 			}
 		}
 		else if (interaction.options.getSubcommand == 'id'){
@@ -116,23 +123,26 @@ module.exports = {
 			console.log('predb');
 			const element = await db.getWord(id)
 			console.log('pre embed')
-			const embedSearch = new MessageEmbed()
-					.setColor(0x0000FF)
-					.setTitle(element.francais)
-					.setDescription(element.pierrick)
-					.addFields(
-						{name: 'cyrilique', value: element.cyrilic},
-						{name: 'hangeul', value: element.hangeul},
-						{name: 'étymologie', value: element.etymologie},
-						{name: 'phonetique', value: element.phonetique},
-						{name: 'type', value: element.type},
-						{name: '\u200b', value: '\u200B'},
-						{name: 'classe grammaticale', value: element.class},
-						{name: 'définition', value: element.definition},
-						{name: 'commentaire', value: element.commentaire}
-					)
-			
-			await interaction.editReply({embeds: [embedSearch]});
+			if (element.length == 0) await interaction.editReply("le mot n'a pas été trouvé");
+			else {
+				const embedSearch = new MessageEmbed()
+						.setColor(0x0000FF)
+						.setTitle(element.francais)
+						.setDescription(element.pierrick)
+						.addFields(
+							{name: 'cyrilique', value: element.cyrilic},
+							{name: 'hangeul', value: element.hangeul},
+							{name: 'étymologie', value: element.etymologie},
+							{name: 'phonetique', value: element.phonetique},
+							{name: 'type', value: element.type},
+							{name: '\u200b', value: '\u200B'},
+							{name: 'classe grammaticale', value: element.class},
+							{name: 'définition', value: element.definition},
+							{name: 'commentaire', value: element.commentaire}
+						)
+				
+				await interaction.editReply({embeds: [embedSearch]});
+			}
 		}
 	},
 };

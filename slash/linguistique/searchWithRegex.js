@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const db = require('../../data/dao_linguistique');
+const {db_linguistique} = require('../../data/dao_linguistique');
 const { MessageEmbed } = require('discord.js');
+const db = db_linguistique;
 
 module.exports = {
 	data: new SlashCommandBuilder()

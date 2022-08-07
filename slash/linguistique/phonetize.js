@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const correspondance = require("../../data/phonetique.json");
+const {correspondance} = require("data");
 
 module.exports = {
 	data: new SlashCommandBuilder()

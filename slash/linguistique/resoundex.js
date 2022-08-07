@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const soundex = require('../../data/soundex');
+const {soundex} = require('data');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -31,7 +31,7 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id == '361257883247050762'){
             if (interaction.options.getSubcommand() == 'all'){
-                await soundex.initSoundex();
+                soundex.initSoundex();
                 await interaction.reply('soundex réinitialisé');
             }
             else if (interaction.options.getSubcommand() == 'search'){
