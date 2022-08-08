@@ -16,7 +16,7 @@ var functions = function(){
                 IAccent : /Ï|Î/,
                 OAccent : /Ô|Ö|Ō|Ò|Ó/,
                 UAccent : /Û|Ü|Ū|Ù|Ú|Y/,
-                nullLetters : /A|E|I|O|U|H|W|_\W\s/,
+                nullLetters : /A|E|I|O|U|H|W|_|\W|\s|A/,
                 bilabial : /B|P/,
                 velarOcclusive : /C|K|Q/,
                 dental : /D|T|Þ|Ð/,
@@ -30,8 +30,11 @@ var functions = function(){
             mot = mot.replace(regex.AAccent, 'A').replace(regex.EAccent, 'E').replace(regex.IAccent, 'I').replace(regex.OAccent, 'O').replace(regex.UAccent, 'U');
             result += mot[0];
             mot = mot.slice(1);
-            result += mot.replace(regex.nullLetters, '0').replace(regex.bilabial, '1').replace(regex.velarOcclusive, '2').replace(regex.dental, '3').replace(
-                     regex.spirante, '4').replace(regex.nasale, '5').replace(regex.frenchR, '6').replace(regex.paleoAlveolar, '7').replace(regex.alveolar, '8').replace(regex.labioDental, 9);
+            for (let char of mot){
+                result += char.replace(regex.nullLetters, '').replace(regex.bilabial, '1').replace(regex.velarOcclusive, '2').replace(regex.dental, '3').replace(
+                    regex.spirante, '4').replace(regex.nasale, '5').replace(regex.frenchR, '6').replace(regex.paleoAlveolar, '7').replace(regex.alveolar, '8').replace(regex.labioDental, 9);
+
+            }
             for (let i = 1; i < result.length; i++) {
                 if (result[i] == result[i+1]){
                     var chars = result.split('');
@@ -76,7 +79,7 @@ var functions = function(){
         });
     }
 
-    this.soundexId = function sondexId(id){
+    this.soundexId = function soundexId(id){
         let inputQuery = "SELECT id, francais, pierrick FROM dictionnaire WHERE id = ?; "
         let outputQuery = "UPDATE dictionnaire SET soundexfr = ?, soundexprk = ? WHERE id = ?"
         db.get(inputQuery,[id], (err, row)=>{

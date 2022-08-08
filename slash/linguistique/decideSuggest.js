@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {db_linguistique} = require('data')
-const db = db_linguistique;
+const data = require('data');
+
 
 
 
@@ -33,19 +33,19 @@ module.exports = {
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){
             const id = interaction.options.getString('id');
-            const proposition = db.getPropositionById(id);
+            const proposition = await data.db_linguistique.getPropositionById(id);
             if (interaction.options.getSubcommand() === "validate") {
                 if (proposition.type == 'add') {
-                    await db.validateAddition(id);
-                    await db.purgeProposition(id);
+                    await data.db_linguistique.validateAddition(id);
+                    await data.db_linguistique.purgeProposition(id);
                     await interaction.reply(`La proposition ${id} a été validée et ajoutée.`)
                 }
                 else if (proposition.type == 'edit') {
-                    await db.purgeProposition(id);
+                    await data.db_linguistique.purgeProposition(id);
                 }
             }
             else if (interaction.options.getSubcommand() === "reject"){
-                await db.rejectProposition(id);
+                await data.db_linguistique.rejectProposition(id);
                 await interaction.reply(`La proposition ${id} a été rejetée.`)
             }
 

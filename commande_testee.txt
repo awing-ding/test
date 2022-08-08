@@ -3,10 +3,12 @@ commande fonctionnelle:
 /phonetize
 /looksuggest
 /resoundex
+/search
 
 
 commande non fonctionneles:
-bloc search
 /suggest
+/search-by-regex
 
 en cours:
+/search-by-regex

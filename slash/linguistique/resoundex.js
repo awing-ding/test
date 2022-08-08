@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {soundex} = require('data');
+const data = require('data');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -31,13 +31,13 @@ module.exports = {
     async execute(interaction) {
         if (interaction.user.id == '361257883247050762'){
             if (interaction.options.getSubcommand() == 'all'){
-                soundex.initSoundex();
+                data.soundex.initSoundex();
                 await interaction.reply('soundex réinitialisé');
             }
             else if (interaction.options.getSubcommand() == 'search'){
                 let offset = interaction.options.getInteger('offset');
                 if (offset == 'undefined' || offset == 'null' || offset == null) { offset = 0; }
-                result = await soundex.searchNoSoundex(offset);
+                result = await data.soundex.searchNoSoundex(offset);
                 let list = "id: ";
                 for (const element of result){
                     list += `${element.id}, `;
@@ -46,7 +46,7 @@ module.exports = {
             }
             else if (interaction.options.getSubcommand() == 'byid'){
                 const id = interaction.options.getInteger('id');
-                soundex.soundexId(id);
+                data.soundex.soundexId(id);
                 await interaction.reply('done');
             }
     }

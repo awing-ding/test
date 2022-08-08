@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {db_linguistique} = require('data');
+const data = require('data');
 const { MessageEmbed } = require('discord.js');
-const db = db_linguistique;
+
 
 
 module.exports = {
@@ -17,12 +17,12 @@ module.exports = {
 		if (interaction.user.id == '361257883247050762'){
 
 			let offset = 0
-			const numberOfSuggestion = await db.countProposition();
+			const numberOfSuggestion = await data.db_linguistique.countProposition();
 			if (numberOfSuggestion.count == '0') {
 				await interaction.reply("il n'y a pas de suggestion pour le moment");
 			}
 			else {
-				proposition = db.lookToProposition(offset);
+				proposition = await data.db_linguistique.lookToProposition(offset);
 				const title = "" + proposition.francais;
 				let author = '';
 				try {

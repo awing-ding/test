@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {db_linguistique} = require('data')
-const db = db_linguistique;
+const data = require('data');
+
 
 
 module.exports = {
@@ -49,7 +49,7 @@ module.exports = {
 	async execute(interaction) {
 		if (interaction.user.id == '361257883247050762'){
             const id = interaction.options.getString('id');
-            if (db.isIdValid(id)) {
+            if (await data.db_linguistique.isIdValid(id)) {
                 //obtention des paramètres et ajout dans un objet
                 let param = {}
                 param.pierrick = interaction.options.getString('pierrick');
@@ -61,14 +61,14 @@ module.exports = {
                 param.cyrilic = interaction.options.getString('cyrilic');
                 param.hangeul = interaction.options.getString('hangeul');
                 param.classe = interaction.options.getString('class');
-                let base = db.getWord(id);
+                let base = await data.db_linguistique.getWord(id);
                 //on récupère les valeurs pour vérifier si quelque chose a été mit ou non, puis on remplace les valeurs par défaut par les valeurs utilisateurs
                 for (proprieties of param){
                     if(param[proprieties] != undefined){
                         base[proprieties] = param[proprieties];
                     }
                 }
-                db.editWord(id, base);
+                await data.db_linguistique.editWord(id, base);
 
             }
             else await interaction.reply("l'id est invalide")

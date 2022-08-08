@@ -134,7 +134,7 @@ var dao_linguistique = function(){
 
     this.searchByFrench = async function(soundexedMot, offset){
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE francais = ? LIMIT 5 OFFSET ?;";
+            const query = "SELECT * FROM dictionnaire WHERE soundexfr = ? LIMIT 5 OFFSET ?;";
             db.all(query, [soundexedMot, offset], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);
@@ -144,7 +144,7 @@ var dao_linguistique = function(){
 
     this.searchByPierrick = async function(soundexedMot, offset){
         return new Promise(async function(resolve, reject){
-            const query = "SELECT * FROM dictionnaire WHERE pierrick = ? LIMIT 5 OFFSET ?;";
+            const query = "SELECT * FROM dictionnaire WHERE soundexprk = ? LIMIT 5 OFFSET ?;";
             db.all(query, [soundexedMot, offset], (err, rows) => {
                 if(err) reject(err);
                 else resolve(rows);

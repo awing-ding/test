@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const {db_linguistique} = require('../../data/dao_linguistique');
-const db = db_linguistique;
+const data = require('../../data/dao_linguistique');
+
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -62,7 +62,7 @@ module.exports = {
                 //génère un identifiant aléatoire
                 id = Math.ceil(Math.random() * 9) + id; 
             }
-        } while(await db.isPropositionIdTaken(id));
+        } while(await data.db_linguistique.isPropositionIdTaken(id));
         let suggestion = {
             'id': id,
             'instigateur': interaction.user.id,
@@ -77,7 +77,7 @@ module.exports = {
             'cyrilic': interaction.options.getString('cyrilic'),
             'hangeul': interaction.options.getString('hangeul')
         };
-        await db.addProposition(suggestion);
+        await data.db_linguistique.addProposition(suggestion);
         await interaction.editReply('<@361257883247050762> une nouvelle suggestion a été postée')
 	},
 };
